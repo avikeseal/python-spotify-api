@@ -1,5 +1,7 @@
 from dotenv import load_dotenv
 import os
+import base64
+from requests import post
 
 #
 load_dotenv()
@@ -8,7 +10,7 @@ load_dotenv()
 client_id = os.getenv("CLIENT_ID")
 client_secret = os.getenv("CLIENT_SECRET") #and client secret
 
-print(client_id, client_secret)
+#print(client_id, client_secret)
 
 #here we will be implementing an API that allows us to query information
 #about the spotify library e.g. artists, albums, playlists, songs, tracks, etc
@@ -18,3 +20,20 @@ print(client_id, client_secret)
 #to spotify account services
 #this service returns us a temp acess token
 #with that access token we can then send requests to spotify web api
+
+#we take out client ID concatenate to our client secret and then 
+#encode that using a base64 encoding and thats what we need to send to retrieve
+#our authorization token
+def get_token():
+    auth_string = client_id + ":" + client_secret
+    auth_bytes = auth_string.encode("utf-8")
+    auth_base64 = str(base64.b64encode(auth_base64), "utf-8")
+
+    #url we wanna send reuqest to:
+    url = "https://accounts.spotify.com/api/token"
+    headers = {
+        "Authorization": "Basic " + auth_base64,
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+    data = {"grant_type": "client_credentials"}
+    result = post(url, headers=headers, data=data)
