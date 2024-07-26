@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import base64
 from requests import post
+import json
 
 #
 load_dotenv()
@@ -27,7 +28,7 @@ client_secret = os.getenv("CLIENT_SECRET") #and client secret
 def get_token():
     auth_string = client_id + ":" + client_secret
     auth_bytes = auth_string.encode("utf-8")
-    auth_base64 = str(base64.b64encode(auth_base64), "utf-8")
+    auth_base64 = str(base64.b64encode(auth_bytes), "utf-8")
 
     #url we wanna send reuqest to:
     url = "https://accounts.spotify.com/api/token"
@@ -37,3 +38,11 @@ def get_token():
     }
     data = {"grant_type": "client_credentials"}
     result = post(url, headers=headers, data=data)
+    #we're gonna be returning some json data in a field known as content:
+    #convert that data into a python dict so we can acess information inside
+    json_result = json.loads(result.content)
+    token = json_result["access_token"]
+    return token
+
+token = get_token()
+print(token)
