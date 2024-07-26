@@ -37,12 +37,24 @@ def get_token():
         "Content-Type": "application/x-www-form-urlencoded"
     }
     data = {"grant_type": "client_credentials"}
+    
     result = post(url, headers=headers, data=data)
     #we're gonna be returning some json data in a field known as content:
     #convert that data into a python dict so we can acess information inside
     json_result = json.loads(result.content)
     token = json_result["access_token"]
     return token
+
+#when we get the acces to our auth token this is what we'll be using in and
+#any future headers when we're trying to send requests to the api to get some artist 
+#or playlist information
+#whenever we're sending another request:
+def get_auth_header(token):
+    #we take the token and return the following header
+    #thats all you need for the authorization header for any future requests
+    #you got to use this API token
+    return {'Authorization': 'Bearer ' + token}
+
 
 token = get_token()
 print(token)
