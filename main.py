@@ -4,7 +4,7 @@ import base64
 from requests import post
 import json
 
-#
+
 load_dotenv()
 
 #this will get the value of the env variable, in this case, client id
@@ -54,6 +54,15 @@ def get_auth_header(token):
     #thats all you need for the authorization header for any future requests
     #you got to use this API token
     return {'Authorization': 'Bearer ' + token}
+
+#this func is going to search for artists
+#we need the token as well as the artist's name
+def search_for_artist(token, artist_name):
+    #url of search api endpoint
+    url = "https://api.spotify.com/v1/search"
+    headers = get_auth_header(token)
+    #
+    query = f"q={artist_name}&type=artist"
 
 
 token = get_token()
