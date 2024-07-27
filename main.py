@@ -61,15 +61,31 @@ def search_for_artist(token, artist_name):
     #url of search api endpoint
     url = "https://api.spotify.com/v1/search"
     headers = get_auth_header(token)
-    query = f"q={artist_name}&type=artist&limit=1"
+    query = f"?q={artist_name}&type=artist&limit=1"
 
     #combining queries together:
     query_url = url + query
-    result = get(query_url, header=headers)
+    result = get(query_url, headers=headers)
     #parsing json result:
-    json_result = json.loads(result.content)
-    print(json_result)
+    json_result = json.loads(result.content)["artists"]["items"]
+    #if the length of my json reult is equal to 0:
+    if len(json_result) == 0:
+        print("No artist with this name exists...")
+        return None
+    #else it will print out the very first result:
+    return json_result[0]
 
 
+def get_songs_by_artist(token, artist_id):
+    url = f"https://api.spotify.com/v1/artists/{artist_id}/top-tracks?country=US"
+    headers = get_auth_header(token)
+    result = get(url, headers=headers)
+    json_result = json.loads(result.content)["tracks"]["items"]
+
+    
 token = get_token()
-print(token)
+result = search_for_artist(token, "ACDC")
+#to display the artist:
+#print(result["name"])
+
+artist_id = result["id"]
